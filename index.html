@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Shop Lift Up!</title>
+		<style>
+			body
+			{
+				background-image: url(logo.PNG);
+				background-repeat: no-repeat;
+				background-size: 350px;
+				background-position: right top;
+				background-attachment: fixed;
+			}
+			section
+			{
+				min-width: 40%;
+				background-color: #dddddd;
+				box-shadow: 3px 3px 6px 3px black;
+				font: 18pt georgia;
+				display:inline-block;
+				margin-left: 5%;
+				margin-bottom: 5px;
+			}
+			form
+			{
+				display: inline-block;
+				width: 40%;
+				margin-right: 5%;
+				text-align: center;
+				vertical-align: top;
+			}
+			.listCSS
+			{
+				text-align: center;
+				color: #1aa3ff;
+			}
+			button
+			{
+				font: 14pt calibri;
+			}
+			form, h1, h3
+			{
+				font-family: comic sans ms;
+			}
+			h1
+			{
+				font-size: 24pt;
+				color: #00ffff;
+			}
+			ol
+			{
+				list-style-type: decimal;
+			}
+			ul
+			{
+				list-style-type: decimal;
+				text-align: left;
+			}
+			.bigs
+			{
+				font-size: 18pt;
+				color: gold;
+			}
+		</style>
+		<script src="array.js"></script>
+		<script>
+
+			/* Justin's guide to reading repeated variables, names, classes, and whatnot!
+				Anything with HTML at the end belongs in the frontend
+				Anything with CSS at the end belongs in the style tags
+
+				So for example, numCakeHTML would be the frontend id tag!
+				numCake would be the variable once I document.getElementById("numCakeHTML")*/
+
+			function initialize() {
+				//list = document.getElementById("listHTML");
+				inputForm = document.getElementById("inputFormHTML");
+				listItems = document.getElementById("listItemsHTML");
+
+				groceryList = [];
+			}
+			function addGrocery() { //Creates a list item, and appends it to the ol. 
+				let inputItem = inputForm.groceryInput.value;
+
+				if (groceryList.indexOf(inputItem) == -1) {
+					groceryList.push(inputItem);
+
+					let groceryAdd = document.createElement("li");
+					groceryAdd.innerHTML = inputItem;
+
+					let repeatSpan = document.createElement("span");
+					repeatSpan.innerHTML = "";
+
+					groceryAdd.appendChild(repeatSpan);
+					listItems.appendChild(groceryAdd); //I think cat calls this CorrespondingTaskEl. Spanish is weird.
+				}
+				else
+				{
+					alert("You already have this in the list now stop trying to break code smh");
+				}
+			}
+			function removeGrocery() { //Removes the item based on the position of list
+				let inputPos = (inputForm.groceryOrder.value);
+				let trash = listItems.childNodes[inputPos]; //childNodes actually doesn't follow the start from 0 rule
+				let trashArray = trash.innerHTML.split("<span>")
+
+				removeFromArray(groceryList, trashArray[0]);
+				listItems.removeChild(trash);
+			}
+			function move(isUp) {
+				let belowInputPos = inputForm.groceryOrder.value; 
+				let inputPos = belowInputPos-1;
+				let aboveInputPos = inputPos-1;
+
+				//Now that I look back, .childNode would have saved all this conversion issue, but I would have to do w/o the comments
+				if(isUp) {
+					if (aboveInputPos < 0) {
+						return;
+					}
+					else
+					{
+						var temporary = listItems.children[aboveInputPos].innerHTML; //Takes the innerHTML of <li> and swaps the innerHTML
+						listItems.children[aboveInputPos].innerHTML = listItems.children[inputPos].innerHTML;
+						listItems.children[inputPos].innerHTML = temporary;
+					}
+				}
+				else
+				{
+					if (groceryList.length < (inputPos)) {
+						return;
+					}
+					else
+					{
+						var temporary = listItems.children[belowInputPos].innerHTML;
+						listItems.children[belowInputPos].innerHTML = listItems.children[inputPos].innerHTML;
+						listItems.children[inputPos].innerHTML = temporary;
+					}
+				}
+			}
+			function changeQty(numChange) {
+				let inputPos = (inputForm.groceryOrder.value)-1; //Defines input position and the target list
+				let targetList = listItems.children[inputPos];
+				let QTYSpan = targetList.children[0]
+
+				if (QTYSpan.innerHTML == "") { //If Qty didn't originally exist, we add a qty thingy!
+					if (numChange < 0) {
+						alert("To remove the item, click the remove button instead"); //Well bruh I can't buy -4 tacos
+						return;
+					}
+					let num = (numChange+1).toString();
+					QTYSpan.innerHTML = ` (QTY ${num} )`;
+				}
+				else //Means the QTY already exists
+				{
+					let originalNum = findNumber(QTYSpan.innerHTML); //Finds the number in the string and turns it into a number
+					let newNum = originalNum + numChange;
+					if (newNum < 0) {
+						alert("Buddy I can't yeet more than I have stawp breaking the code"); //Let's hope the computer can add negatives
+						return;
+					}
+					if (newNum == 1) { //Just gets rid of the QTY stuff
+						QTYSpan.innerHTML = "";
+					}
+					else
+					{ //Combines all the parts of the stuff!
+						QTYSpan.innerHTML = ` (QTY ${newNum} )`
+					}
+				}
+			}
+		</script>
+	</head>
+	<body onload="initialize();">
+		<h1>Shop Lift Up!</h1>
+		<h3>The shop where you buy stuff, but it's the second version of Cat's!</h3>
+		<br />
+		<section id="listHTML">
+			<h2 class="listCSS">Grocery List</h2>
+			<ol id="listItemsHTML">
+			</ol>
+		</section>
+		<form id="inputFormHTML">
+			<input type="text" name="groceryInput" placeholder="Name of Item to Add" /> 
+			<button type="button" onclick="addGrocery()">Add Grocery!</button>
+			<br />
+			<hr />
+			<p>Insert the item number you want to modify here</p>
+			<input type="number" name="groceryOrder" /> 
+			<!--Inside the button, button attribute is set to submit, which refreshes the darn page -->
+			<button type="button" onclick="move(true);">Move Up</button>
+			<button type="button" onclick="move(false);">Move Down</button>
+			<button type="button" onclick="changeQty(1)">Add One</button>
+			<button type="button" onclick="changeQty(-1)">Subtract One</button>
+			<button type="button" onclick="removeGrocery()">Remove from List</button> <br />
+
+			<br /><br />
+
+			<span class="bigs">Check out our daily specials:</span>
+			<ul>
+				<li>Deep Fried Cats</li>
+				<li>Bottle of Dark Mode Tears</li>
+				<li>Catburger</li>
+				<li>Cattails</li>
+				<li>Sushi Cat</li>
+				<li>Anomonyous Kitten (only 1 left)</li>
+			</ul>
+		</form>
+	</body>
+</html>
