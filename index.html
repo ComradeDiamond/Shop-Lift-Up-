@@ -80,6 +80,10 @@
 				groceryList = [];
 			}
 			function addGrocery() { //Creates a list item, and appends it to the ol. 
+				if (!/[\w]/ig.test(inputForm.groceryInput.value)) {
+					alert("I can't add nothing to the grocery list");
+					return;
+				}
 				let inputItem = inputForm.groceryInput.value;
 
 				if (groceryList.indexOf(inputItem) == -1) {
