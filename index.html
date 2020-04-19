@@ -100,6 +100,9 @@
 				}
 			}
 			function removeGrocery() { //Removes the item based on the position of list
+				if ((inputForm.groceryOrder.value%1 != 0) || (inputForm.groceryOrder.value < 1) || (inputForm.groceryOrder.value > groceryList.length)) {
+					return;
+				}
 				let inputPos = (inputForm.groceryOrder.value);
 				let trash = listItems.childNodes[inputPos]; //childNodes actually doesn't follow the start from 0 rule
 				let trashArray = trash.innerHTML.split("<span>")
@@ -108,6 +111,9 @@
 				listItems.removeChild(trash);
 			}
 			function move(isUp) {
+				if ((inputForm.groceryOrder.value%1 != 0) || (inputForm.groceryOrder.value < 1) || (inputForm.groceryOrder.value > groceryList.length)) {
+					return;
+				}
 				let belowInputPos = inputForm.groceryOrder.value; 
 				let inputPos = belowInputPos-1;
 				let aboveInputPos = inputPos-1;
@@ -138,6 +144,9 @@
 				}
 			}
 			function changeQty(numChange) {
+				if ((inputForm.groceryOrder.value%1 != 0) || (inputForm.groceryOrder.value < 1) || (inputForm.groceryOrder.value > groceryList.length)) {
+					return;
+				}
 				let inputPos = (inputForm.groceryOrder.value)-1; //Defines input position and the target list
 				let targetList = listItems.children[inputPos];
 				let QTYSpan = targetList.children[0]
@@ -185,7 +194,7 @@
 			<hr />
 			<p>Insert the item number you want to modify here</p>
 			<input type="number" name="groceryOrder" /> 
-			<!--Inside the form, button attribute is set to submit, which refreshes the darn page -->
+			<!--Inside the button, button attribute is set to submit, which refreshes the darn page -->
 			<button type="button" onclick="move(true);">Move Up</button>
 			<button type="button" onclick="move(false);">Move Down</button>
 			<button type="button" onclick="changeQty(1)">Add One</button>
